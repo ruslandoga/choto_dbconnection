@@ -1,21 +1,11 @@
-# ChotoDbconnection
-
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `choto_dbconnection` to your list of dependencies in `mix.exs`:
+[`:db_connection`](https://github.com/elixir-ecto/db_connection/tree/master) wrapper for [`:choto`](https://github.com/ruslandoga/choto)
 
 ```elixir
-def deps do
-  [
-    {:choto_dbconnection, "~> 0.1.0"}
-  ]
-end
+iex> {:ok, conn} = Choto.Connection.start_link()
+
+iex> DBConnection.prepare_execute(conn, Choto.Connection.Query.new("SELECT 1 + 1"), [])
+{:ok, %Choto.Connection.Query{statement: "SELECT 1 + 1", command: :select},
+ [data: [[{"plus(1, 1)", :u16}]], data: [[{"plus(1, 1)", :u16}, 2]], data: []]}
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/choto_dbconnection>.
-
+See also: [`:choto_ecto`]()

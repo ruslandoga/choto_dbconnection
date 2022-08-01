@@ -6,6 +6,7 @@ defmodule Choto.Connection do
   # NOTE: txs are not implemeted yet: https://github.com/ClickHouse/ClickHouse/issues/22086
 
   use DBConnection
+  alias Choto.Connection.Query
 
   defmodule Error do
     defexception [:message]
@@ -60,18 +61,20 @@ defmodule Choto.Connection do
     {:ok, :ok, conn}
   end
 
-  @impl true
-  def handle_execute(query, params, _opts, conn) do
-    :ok = Choto.query(conn, query)
+  DBConnection
 
-    if params do
+  @impl true
+  def handle_execute(%Query{statement: statement, command: command} = query, params, _opts, conn) do
+    :ok = Choto.query(conn, statement)
+
+    if command in [:insert, :update] do
       :ok = Choto.send_data(conn, params)
     end
 
     {:ok, packets, conn} = Choto.await(conn)
     # TODO telemetry for profile_events and others
     response = Enum.filter(packets, fn packet -> match?({:data, _data}, packet) end)
-    {:ok, response, conn}
+    {:ok, query, response, conn}
   end
 
   @impl true
