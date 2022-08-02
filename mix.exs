@@ -1,4 +1,4 @@
-defmodule ChotoDbconnection.MixProject do
+defmodule Choto.Connection.MixProject do
   use Mix.Project
 
   def project do
